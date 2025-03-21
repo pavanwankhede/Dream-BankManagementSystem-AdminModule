@@ -12,9 +12,4 @@ import com.dbms.admin.main.dto.ErrorResponseDTO;
 @RestControllerAdvice
 public class GlobalException {
 	
-	@ExceptionHandler(ResourceNotSavedException.class)
-	public ResponseEntity<ErrorResponseDTO> handleResourceNotSavedException(ResourceNotSavedException e) {
-	    ErrorResponseDTO errorResponse = new ErrorResponseDTO(e.getMessage(), LocalDateTime.now());
-	    return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
-	}
 }

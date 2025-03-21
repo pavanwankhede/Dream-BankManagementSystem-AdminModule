@@ -1,8 +1,6 @@
 package com.dbms.admin.main.controller;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
-
+import java.io.IOException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,10 +10,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.dbms.admin.main.model.Employee;
 import com.dbms.admin.main.serviceinterface.ServiceInterface;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import jakarta.validation.Valid;
 
@@ -24,19 +25,36 @@ import jakarta.validation.Valid;
 @RequestMapping("/admin_module")
 public class AdminController {
 	
+	@Autowired
+	private ObjectMapper mapper;
+	
 	private static final Logger log= LoggerFactory.getLogger(AdminController.class);
 	
 	@Autowired
 	private ServiceInterface serviceInterface;
 	
-	@PostMapping("/addEmployees")
-	public ResponseEntity<Employee> addEmployeeData(@Valid @RequestBody Employee empData) {
-	  
-	    log.info("Received request to save empData: {}", empData);
+	 @PostMapping("/addEmployees")
+	    public ResponseEntity<?> addEmployeeData(
+	            @Valid @RequestPart("empData") String empDataJson, 
+	            @RequestPart("passport") MultipartFile passport) {
+	        
+	        try {
+	            log.info("Received request to save employee data.");
 
-	    Employee employee = serviceInterface.saveEmployeeData(empData);
-	    return new ResponseEntity<>(employee, HttpStatus.CREATED);
-	}
+	            Employee empData = mapper.readValue(empDataJson, Employee.class);
+	            Employee savedEmployee = serviceInterface.saveEmployeeData(empData, passport);
+	            
+	            return new ResponseEntity<>(savedEmployee, HttpStatus.CREATED);
+	        
+	        } catch (IOException e) {
+	            log.error("Error processing employee data JSON", e);
+	            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid employee data format.");
+	        } catch (Exception e) {
+	            log.error("Unexpected error occurred", e);
+	            return null;
+	        }
+	    }
+    }
 	
 
-}
+

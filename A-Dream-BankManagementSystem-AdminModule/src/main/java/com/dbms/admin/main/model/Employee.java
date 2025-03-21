@@ -1,7 +1,5 @@
 package com.dbms.admin.main.model;
 
-import java.time.LocalDate;
-
 import com.dbms.admin.main.enums.Department;
 import com.dbms.admin.main.enums.Designation;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -54,18 +52,18 @@ public class Employee {
     @NotBlank(message = "Password cannot be empty")
     @Size(min = 8, max = 20, message = "Password must be between 8 and 20 characters")
     @Pattern(
-        regexp = "^(?=.[A-Z])(?=.[a-z])(?=.\\d)(?=.[@$!%?&])[A-Za-z\\d@$!%?&]+$",
-        message = "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character"
-    )
-    private String password;
+    regexp = "^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[@$!%?&])[A-Za-z\\d@$!%?&]+$",
+   message = "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character"
+    	)
+    	private String password;
 
     @NotBlank(message = "Gender is required")
-    @Pattern(regexp = "^(Male|Female|Other)$", message = "Gender must be Male, Female, or Other")
+    @Pattern(regexp = "^(Male|Female)$", message = "Gender must be Male, Female")
     private String gender;
 
     @NotNull(message = "Date of birth is required")
     @JsonFormat(pattern = "yyyy-MM-dd")
-    private LocalDate dateOfBirth;
+    private String dateOfBirth;
 
     @Email(message = "Invalid email format")
     @NotBlank(message = "Email is required")
@@ -76,13 +74,12 @@ public class Employee {
     private long contactNumber;
 
     @Size(min = 12, max = 12, message = "Aadhar card must be exactly 12 digits")
-    private String adharCardNo;
+    private String aadharCardNo;
 
     @Pattern(regexp = "^[A-Za-z0-9]+$", message = "PAN card must contain only letters and numbers")
     private String panCardNo;
 
     @Lob
-    @Column(columnDefinition = "LONGBLOB")
     private byte[] passportPhoto; // Stores the image as binary data
 
     @NotBlank(message = "Address cannot be empty")
