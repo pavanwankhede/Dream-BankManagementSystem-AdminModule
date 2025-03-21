@@ -31,11 +31,7 @@ public class AdminController {
 	
 	@PostMapping("/addEmployees")
 	public ResponseEntity<Employee> addEmployeeData(@Valid @RequestBody Employee empData) {
-	    
-	    // Set the current date and time using LocalDate and LocalTime
-	   // empData.setDateOfJoining(LocalDate.now());
-	   // empData.setTimeOfJoining(LocalTime.now());
-
+	  
 	    log.info("Received request to save empData: {}", empData);
 
 	    Employee employee = serviceInterface.saveEmployeeData(empData);

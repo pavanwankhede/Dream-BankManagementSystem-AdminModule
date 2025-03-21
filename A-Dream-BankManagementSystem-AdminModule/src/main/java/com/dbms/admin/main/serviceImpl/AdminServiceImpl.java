@@ -24,7 +24,7 @@ public class AdminServiceImpl implements ServiceInterface{
 	@Override
 	public Employee saveEmployeeData(@Valid Employee empData) {
 		
-		 try {
+	
 		        log.info("Processing new employee: {}", empData);
 
 		        // Save employee data
@@ -32,12 +32,7 @@ public class AdminServiceImpl implements ServiceInterface{
 
 		        log.info("Employee saved successfully: {}", savedEmployee);
 		        return savedEmployee;
-
-		 
-		    } catch (ConstraintViolationException e) {
-		        log.error("Validation error: {}", e.getMessage(), e);
-		        throw new ResourceNotSavedException("Invalid employee data. Please check the required fields.");
-	    }
+		  
 	}
 	}
 
