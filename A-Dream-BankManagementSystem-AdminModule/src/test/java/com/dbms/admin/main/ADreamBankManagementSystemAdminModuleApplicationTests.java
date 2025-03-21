@@ -1,0 +1,13 @@
+package com.dbms.admin.main;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
+
+@SpringBootTest
+class ADreamBankManagementSystemAdminModuleApplicationTests {
+
+	@Test
+	void contextLoads() {
+	}
+
+}
