@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import com.dbms.admin.main.model.Employee;
@@ -56,7 +57,14 @@ public class AdminController {
 	            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid employee data format.");
 	        } 
 	    }
-	 @GetMapping("/loginCheck/{userName}/{password}")
+	 @GetMapping("/getAllEplyoyeeData")
+	 public ResponseEntity<List<Employee>> getAllEmployee(){
+		 log.info("Received request to fetch all employees.");
+		 List<Employee> listEmployee= serviceInterface.getAllEmployees();
+		 log.info("Successfully fetched {} employees.", listEmployee.size());
+		 return new ResponseEntity<List<Employee>>(listEmployee,HttpStatus.OK);
+		 }
+	  @GetMapping("/loginCheck/{userName}/{password}")
 	 public ResponseEntity<?> loginCheck(@PathVariable("userName") String userName,@PathVariable("password") String password)
 	 {
 		  log.info("Checking login for user: {}", userName);
