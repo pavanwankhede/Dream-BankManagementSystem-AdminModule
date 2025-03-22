@@ -68,6 +68,9 @@ public class Employee {
     @Email(message = "Invalid email format")
     @NotBlank(message = "Email is required")
     private String emailId;
+    
+    @Min(value = 0, message = "Salary must be non-negative")
+    private double salary;
 
     @Min(value = 1000000000L, message = "Enter a valid 10-digit contact number")
     @Max(value = 9999999999L, message = "Enter a valid 10-digit contact number")
@@ -106,7 +109,6 @@ public class Employee {
      
     
 
-    
-      
+         
 
 }
