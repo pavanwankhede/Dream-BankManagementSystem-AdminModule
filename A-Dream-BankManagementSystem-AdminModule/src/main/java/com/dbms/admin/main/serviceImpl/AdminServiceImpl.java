@@ -24,7 +24,10 @@ public class AdminServiceImpl implements ServiceInterface{
 		@Override
 	    public Employee saveEmployeeData(Employee empData, MultipartFile passport) {
 	        try {
+	        	//Checks if the passport file is not null and not empty.
 	            if (passport != null && !passport.isEmpty()) {
+	            	
+	            	// If a passport photo is provided, it reads the file as a byte array
 	                empData.setPassportPhoto(passport.getBytes());
 	            }
 	            return adminRepository.save(empData);

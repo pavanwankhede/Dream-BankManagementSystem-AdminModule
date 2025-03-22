@@ -8,12 +8,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-
 import com.dbms.admin.main.model.Employee;
 import com.dbms.admin.main.serviceinterface.ServiceInterface;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -40,7 +38,8 @@ public class AdminController {
 	        
 	        try {
 	            log.info("Received request to save employee data.");
-
+                
+  // Uses mapper.readValue(empDataJson, Employee.class) to convert the JSON string into an Employee object.
 	            Employee empData = mapper.readValue(empDataJson, Employee.class);
 	            Employee savedEmployee = serviceInterface.saveEmployeeData(empData, passport);
 	            
@@ -49,10 +48,7 @@ public class AdminController {
 	        } catch (IOException e) {
 	            log.error("Error processing employee data JSON", e);
 	            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid employee data format.");
-	        } catch (Exception e) {
-	            log.error("Unexpected error occurred", e);
-	            return null;
-	        }
+	        } 
 	    }
     }
 	

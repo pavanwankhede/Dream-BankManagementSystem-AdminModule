@@ -79,9 +79,6 @@ public class Employee {
     @Pattern(regexp = "^[A-Za-z0-9]+$", message = "PAN card must contain only letters and numbers")
     private String panCardNo;
 
-    @Lob
-    private byte[] passportPhoto; // Stores the image as binary data
-
     @NotBlank(message = "Address cannot be empty")
     private String address;
 
@@ -102,7 +99,9 @@ public class Employee {
     @Enumerated(EnumType.STRING)
     private Designation designation;
 
-   
+    @Lob
+    private byte[] passportPhoto; // Stores the image as binary data
+
     
      
     
