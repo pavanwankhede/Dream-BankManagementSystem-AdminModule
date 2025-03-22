@@ -33,7 +33,7 @@ public class Employee {
 	
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long employeeId; // Unique Employee ID
+    private int employeeId; // Unique Employee ID
 
     @NotBlank(message = "Full name cannot be blank")
     @Size(min = 3, max = 20, message = "Full name must be between 3 and 20 characters")
