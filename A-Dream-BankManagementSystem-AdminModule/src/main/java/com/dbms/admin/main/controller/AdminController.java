@@ -1,12 +1,15 @@
 package com.dbms.admin.main.controller;
 
 import java.io.IOException;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
@@ -50,7 +53,24 @@ public class AdminController {
 	            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid employee data format.");
 	        } 
 	    }
+	 @GetMapping("/loginCheck/{userName}/{password}")
+	 public ResponseEntity<?> loginCheck(@PathVariable("userName") String userName,@PathVariable("password") String password)
+	 {
+		  log.info("Checking login for user: {}", userName);
+		  if(userName.equals("admin")&& password.equals("admin"))
+		  {
+			 List<Employee> listEmployees= serviceInterface.getAllEmployees();
+			 return new ResponseEntity<List<Employee>>(listEmployees,HttpStatus.OK);
+		  }else {
+			Employee employee = serviceInterface.getByUnameAndPassword(userName, password);
+	        if (employee != null) {
+	            return ResponseEntity.ok(employee); // 200 OK with single employee
+	        } else {
+	            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid username or password");
+	        }
+		 
+	 }
     }
-	
+}
 
 

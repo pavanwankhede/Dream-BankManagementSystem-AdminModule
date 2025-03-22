@@ -1,6 +1,7 @@
 package com.dbms.admin.main.serviceImpl;
 
 import java.io.IOException;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,6 +38,27 @@ public class AdminServiceImpl implements ServiceInterface{
 	            throw new RuntimeException("Failed to process passport photo", e);
 	        }
 	    }
+
+
+		@Override
+		public List<Employee> getAllEmployees() {
+			log.info("Fetching all employees for admin user.");
+			return adminRepository.findAll();
+		}
+
+
+		@Override
+		public Employee getByUnameAndPassword(String userName, String password) {
+			
+			log.info("Checking login for user: {}", userName);
+	        Employee employee = adminRepository.findByUserNameAndPassword(userName, password);
+	        if (employee != null) {
+	            log.info("Login successful for user: {}", userName);
+	        } else {
+	            log.warn("Invalid login attempt for user: {}", userName);
+	        }
+	        return employee;
+		}
 	}
 
 
