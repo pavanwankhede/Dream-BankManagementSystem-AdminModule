@@ -2,6 +2,7 @@ package com.dbms.admin.main.serviceImpl;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,6 +13,8 @@ import org.springframework.web.multipart.MultipartFile;
 import com.dbms.admin.main.model.Employee;
 import com.dbms.admin.main.repository.AdminRepository;
 import com.dbms.admin.main.serviceinterface.ServiceInterface;
+
+import jakarta.validation.Valid;
 
 @Service
 public class AdminServiceImpl implements ServiceInterface{
@@ -43,7 +46,7 @@ public class AdminServiceImpl implements ServiceInterface{
 
 		@Override
 		public List<Employee> getAllEmployees() {
-			log.info("Fetching all employees for admin user.");
+			log.info("Fetching all employees for  user.");
 			return adminRepository.findAll();
 		}
 
@@ -61,7 +64,58 @@ public class AdminServiceImpl implements ServiceInterface{
 	        }
 	        return employee;
 		}
-	}
+        
+		@Override
+		public Employee getSingleEmployee(int id) {
+		
+			return adminRepository.findById(id).get();
+		}
+
+
+		@Override
+		public Employee updateEmployeeData(Employee empData, MultipartFile passport, int id) {
+			log.info("Received request to update Employee with ID: {}", id);
+		    Optional<Employee> optionalEmployee = adminRepository.findById(id);
+		    
+		    if (optionalEmployee.isPresent()) {
+		        Employee employee = optionalEmployee.get();
+		        // Update passport if provided
+		        log.info("Existing employee found: {}", employee);
+		        if (passport != null && !passport.isEmpty()) {
+		            try {
+		            	employee.setPassportPhoto(passport.getBytes());// Assuming the passport is stored as a byte array
+		            	log.info("Updating passport for Employee ID: {}", id);
+		            	
+		            } catch (IOException e) {
+		                log.error("Error processing passport file", e);
+		                throw new RuntimeException("Failed to process passport file.");
+		            }
+		        }
+		        log.info("Successfully updated Employee with ID: {}", id);
+		        // Save the updated employee
+		        return adminRepository.save(employee);
+		       
+		    } else {
+		    	log.error("Employee with ID {} not found", id);
+		        throw new RuntimeException("Employee not found with id: " + id);  // Handle the case where employee is not found
+		    }
+		}
+
+
+		@Override
+		public boolean deleteEmployeeByID(int id) {
+			 
+			if(adminRepository.existsById(id))
+			{
+				adminRepository.deleteById(id);
+				log.info("Successfully deleted Employee with ID: {}", id);
+				return true;
+			}
+			log.error("Employee with ID {} not found. Deletion failed.", id);
+			return false;
+		}
+
+}
 
 
 	

@@ -16,6 +16,12 @@ public interface ServiceInterface {
 
     public	Employee getByUnameAndPassword(String userName, String password);
 
+   public Employee getSingleEmployee(int id);
+
+public Employee updateEmployeeData(Employee empData, MultipartFile passport, int id);
+
+public boolean deleteEmployeeByID(int id);
+
 
  
 
