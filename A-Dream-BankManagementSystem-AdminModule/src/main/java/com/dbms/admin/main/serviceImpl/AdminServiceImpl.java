@@ -18,6 +18,7 @@ public class AdminServiceImpl implements ServiceInterface{
 	
 	private static final Logger log = LoggerFactory.getLogger(AdminServiceImpl.class);
 	
+	
 	@Autowired 
 	private AdminRepository adminRepository;
 
@@ -53,6 +54,7 @@ public class AdminServiceImpl implements ServiceInterface{
 			log.info("Checking login for user: {}", userName);
 	        Employee employee = adminRepository.findByUserNameAndPassword(userName, password);
 	        if (employee != null) {
+	        	
 	            log.info("Login successful for user: {}", userName);
 	        } else {
 	            log.warn("Invalid login attempt for user: {}", userName);
