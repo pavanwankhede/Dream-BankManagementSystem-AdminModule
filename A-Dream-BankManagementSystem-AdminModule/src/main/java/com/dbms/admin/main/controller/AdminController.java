@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -98,9 +99,26 @@ public class AdminController {
 	            log.error("Error processing employee data JSON", e);
 	            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid employee data format.");
 	        } 
+	        
 	    }
 	 
-
+	 @DeleteMapping("/deleteById/{employeeId}")
+		public ResponseEntity<String> deleteEnquiryByID(@PathVariable("employeeId") int id){
+			
+			log.info("Received request to delete Employee with ID: {}", id);
+			
+			  boolean delete= serviceInterface.deleteEmployeeByID(id);
+			  if(delete)
+			  {
+				  log.info("Successfully deleted Employee with ID: {}", id);
+				  return new ResponseEntity<>("कर्मचारी डेटा यशस्वीरित्या हटविला! ✅",HttpStatus.OK);
+			  }else
+			  {
+				  log.error("Error deleting Employee with ID: {}", id);
+					return new ResponseEntity<String>("Employee Not Found",HttpStatus.NOT_FOUND);
+			  }
+			
+ }
 	 
 	 
 	 

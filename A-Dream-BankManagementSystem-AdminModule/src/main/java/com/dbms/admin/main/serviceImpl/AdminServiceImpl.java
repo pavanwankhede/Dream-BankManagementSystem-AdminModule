@@ -102,6 +102,19 @@ public class AdminServiceImpl implements ServiceInterface{
 		}
 
 
+		@Override
+		public boolean deleteEmployeeByID(int id) {
+			 
+			if(adminRepository.existsById(id))
+			{
+				adminRepository.deleteById(id);
+				log.info("Successfully deleted Employee with ID: {}", id);
+				return true;
+			}
+			log.error("Employee with ID {} not found. Deletion failed.", id);
+			return false;
+		}
+
 }
 
 

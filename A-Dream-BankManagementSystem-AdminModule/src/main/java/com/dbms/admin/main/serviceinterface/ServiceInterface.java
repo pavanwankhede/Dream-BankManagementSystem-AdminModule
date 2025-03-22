@@ -20,6 +20,8 @@ public interface ServiceInterface {
 
 public Employee updateEmployeeData(Employee empData, MultipartFile passport, int id);
 
+public boolean deleteEmployeeByID(int id);
+
 
  
 
