@@ -11,6 +11,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
@@ -71,6 +73,41 @@ public class AdminController {
 		 
 	 }
     }
+	 
+	 @GetMapping("/get_Employee/{employeeId}")
+	 public ResponseEntity<Employee> getSingleEmployee(@PathVariable("employeeId")int id){
+		 Employee employee=serviceInterface.getSingleEmployee(id);
+		 return new ResponseEntity<Employee>(employee,HttpStatus.OK);
+	 }
+	 
+	 @PutMapping("/updateEmployeeData/{employeeId}")
+	    public ResponseEntity<?> updateEmployeeData(
+	            @Valid @RequestPart("empData") String empDataJson, 
+	            @RequestPart("passport") MultipartFile passport,@PathVariable("employeeId")int id) {
+	        
+	        try {
+	        	log.info("Received request to update Employee with ID: {}", id);
+             
+// Uses mapper.readValue(empDataJson, Employee.class) to convert the JSON string into an Employee object.
+	            Employee empData = mapper.readValue(empDataJson, Employee.class);
+	            Employee savedEmployee = serviceInterface.updateEmployeeData(empData, passport,id);
+	            log.info("Successfully updated Employee with ID: {}", id);
+	            return new ResponseEntity<>(savedEmployee, HttpStatus.OK);
+	        
+	        } catch (IOException e) {
+	            log.error("Error processing employee data JSON", e);
+	            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid employee data format.");
+	        } 
+	    }
+	 
+
+	 
+	 
+	 
+	 
+	 
+	 
+	 
 }
 
 
