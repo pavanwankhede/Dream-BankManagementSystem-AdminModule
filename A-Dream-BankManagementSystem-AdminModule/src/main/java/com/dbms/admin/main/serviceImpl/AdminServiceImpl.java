@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.dbms.admin.main.exceptions.EmployeeNotFoundException;
-
 import com.dbms.admin.main.model.Employee;
 import com.dbms.admin.main.repository.AdminRepository;
 import com.dbms.admin.main.serviceinterface.ServiceInterface;
@@ -120,16 +119,9 @@ public class AdminServiceImpl implements ServiceInterface{
 
 
 		 public Employee getSingleEmployee(int id) {
-			 Optional<Employee> employee=adminRepository.findById(id);
-				
-				if (employee.isEmpty()) {
-					
-				throw new EmployeeNotFoundException("Enquiry for the Id- "+id+" Is not Found");
+			 return adminRepository.findById(id)
+				        .orElseThrow(() -> new EmployeeNotFoundException("Employee with ID " + id + " not found."));
 				}
-				
-				
-				return employee.get() ;
-			}
 
 	
 }
