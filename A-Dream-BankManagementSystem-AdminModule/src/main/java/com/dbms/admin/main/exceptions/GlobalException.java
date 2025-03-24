@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -18,4 +19,17 @@ public class GlobalException {
 	    return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 	
+	
+	@ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+    public ResponseEntity<String> handleMethodNotAllowed(HttpRequestMethodNotSupportedException ex) {
+       
+		 return new ResponseEntity<>("Error: This request method is not allowed. Please check the API documentation.",HttpStatus.METHOD_NOT_ALLOWED);
+                
+    }
+	
+	  @ExceptionHandler(ResourceNotFoundException.class)
+	    public ResponseEntity<String> handleResourceNotFound(ResourceNotFoundException ex) {
+
+	        return new ResponseEntity<>("Employee not found with ID:",HttpStatus.NOT_FOUND);
+	    }
 }

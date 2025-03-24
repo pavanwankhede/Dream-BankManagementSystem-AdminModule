@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.dbms.admin.main.exceptions.ResourceNotFoundException;
 import com.dbms.admin.main.model.Employee;
 import com.dbms.admin.main.repository.AdminRepository;
 import com.dbms.admin.main.serviceinterface.ServiceInterface;
@@ -67,8 +68,8 @@ public class AdminServiceImpl implements ServiceInterface{
         
 		@Override
 		public Employee getSingleEmployee(int id) {
-		
-			return adminRepository.findById(id).get();
+			return adminRepository.findById(id)
+		            .orElseThrow(() -> new ResourceNotFoundException("Employee not found with ID: " +id));
 		}
 
 
@@ -79,11 +80,14 @@ public class AdminServiceImpl implements ServiceInterface{
 		    
 		    if (optionalEmployee.isPresent()) {
 		        Employee employee = optionalEmployee.get();
+		        
 		        // Update passport if provided
 		        log.info("Existing employee found: {}", employee);
 		        if (passport != null && !passport.isEmpty()) {
 		            try {
-		            	employee.setPassportPhoto(passport.getBytes());// Assuming the passport is stored as a byte array
+		            	
+		            	// Assuming the passport is stored as a byte array
+		            	employee.setPassportPhoto(passport.getBytes());
 		            	log.info("Updating passport for Employee ID: {}", id);
 		            	
 		            } catch (IOException e) {
@@ -91,13 +95,18 @@ public class AdminServiceImpl implements ServiceInterface{
 		                throw new RuntimeException("Failed to process passport file.");
 		            }
 		        }
+		        
 		        log.info("Successfully updated Employee with ID: {}", id);
+		        
 		        // Save the updated employee
 		        return adminRepository.save(employee);
 		       
 		    } else {
+		    	
 		    	log.error("Employee with ID {} not found", id);
-		        throw new RuntimeException("Employee not found with id: " + id);  // Handle the case where employee is not found
+		    	
+		    	// Handle the case where employee is not found
+		        throw new RuntimeException("Employee not found with id: " + id);  
 		    }
 		}
 
