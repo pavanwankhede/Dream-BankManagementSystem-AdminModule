@@ -10,7 +10,7 @@ import com.dbms.admin.main.model.Employee;
 public interface AdminRepository extends JpaRepository<Employee, Integer> {
 	
 	
-	@Query("SELECT e FROM Employee e WHERE e.userName = :userName AND e.password = :password")
+	//@Query("SELECT e FROM Employee e WHERE e.userName = :userName AND e.password = :password")
 	public Employee findByUserNameAndPassword(String userName, String password);
 
 }
