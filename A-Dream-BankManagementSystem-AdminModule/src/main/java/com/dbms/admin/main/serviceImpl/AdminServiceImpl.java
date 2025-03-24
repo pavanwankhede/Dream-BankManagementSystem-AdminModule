@@ -10,12 +10,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.dbms.admin.main.exceptions.ResourceNotFoundException;
+import com.dbms.admin.main.exceptions.EmployeeNotFoundException;
+
 import com.dbms.admin.main.model.Employee;
 import com.dbms.admin.main.repository.AdminRepository;
 import com.dbms.admin.main.serviceinterface.ServiceInterface;
-
-import jakarta.validation.Valid;
 
 @Service
 public class AdminServiceImpl implements ServiceInterface{
@@ -66,16 +65,6 @@ public class AdminServiceImpl implements ServiceInterface{
 	        return employee;
 		}
         
-		@Override
-		public Employee getSingleEmployee(int id) {
-<<<<<<< HEAD
-			return adminRepository.findById(id)
-		            .orElseThrow(() -> new ResourceNotFoundException("Employee not found with ID: " +id));
-=======
-			log.info("Received request to get Employee with ID: {}", id);
-			return adminRepository.findById(id).get();
->>>>>>> branch 'master' of https://github.com/pavanwankhede/Dream-BankManagementSystem-AdminModule.git
-		}
 
 
 		@Override
@@ -129,6 +118,20 @@ public class AdminServiceImpl implements ServiceInterface{
 			return false;
 		}
 
+
+		 public Employee getSingleEmployee(int id) {
+			 Optional<Employee> employee=adminRepository.findById(id);
+				
+				if (employee.isEmpty()) {
+					
+				throw new EmployeeNotFoundException("Enquiry for the Id- "+id+" Is not Found");
+				}
+				
+				
+				return employee.get() ;
+			}
+
+	
 }
 
 
