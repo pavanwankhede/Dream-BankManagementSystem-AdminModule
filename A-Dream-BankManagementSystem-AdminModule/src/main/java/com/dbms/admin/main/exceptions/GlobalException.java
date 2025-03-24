@@ -20,6 +20,7 @@ public class GlobalException {
 	}
 	
 	
+<<<<<<< HEAD
 	@ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     public ResponseEntity<String> handleMethodNotAllowed(HttpRequestMethodNotSupportedException ex) {
        
@@ -32,4 +33,8 @@ public class GlobalException {
 
 	        return new ResponseEntity<>("Employee not found with ID:",HttpStatus.NOT_FOUND);
 	    }
+=======
+	
+ 
+>>>>>>> branch 'master' of https://github.com/pavanwankhede/Dream-BankManagementSystem-AdminModule.git
 }

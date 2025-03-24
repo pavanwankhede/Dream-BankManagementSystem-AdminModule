@@ -68,8 +68,13 @@ public class AdminServiceImpl implements ServiceInterface{
         
 		@Override
 		public Employee getSingleEmployee(int id) {
+<<<<<<< HEAD
 			return adminRepository.findById(id)
 		            .orElseThrow(() -> new ResourceNotFoundException("Employee not found with ID: " +id));
+=======
+			log.info("Received request to get Employee with ID: {}", id);
+			return adminRepository.findById(id).get();
+>>>>>>> branch 'master' of https://github.com/pavanwankhede/Dream-BankManagementSystem-AdminModule.git
 		}
 
 
