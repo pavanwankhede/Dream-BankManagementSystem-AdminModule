@@ -67,7 +67,7 @@ public class AdminServiceImpl implements ServiceInterface{
         
 		@Override
 		public Employee getSingleEmployee(int id) {
-		
+			log.info("Received request to get Employee with ID: {}", id);
 			return adminRepository.findById(id).get();
 		}
 
