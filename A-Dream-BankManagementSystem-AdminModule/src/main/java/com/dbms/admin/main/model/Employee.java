@@ -1,10 +1,9 @@
 package com.dbms.admin.main.model;
 
-import com.dbms.admin.main.enums.Department;
+
 import com.dbms.admin.main.enums.Designation;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -93,10 +92,6 @@ public class Employee {
 
     @NotBlank(message = "Country cannot be empty")
     private String country;
-
-    @NotNull(message = "Department is required")
-    @Enumerated(EnumType.STRING)
-    private Department department;
 
     @NotNull(message = "Designation is required")
     @Enumerated(EnumType.STRING)

@@ -76,6 +76,7 @@ public class AdminServiceImpl implements ServiceInterface{
 		        
 		        // Update passport if provided
 		        log.info("Existing employee found: {}", employee);
+		        
 		        if (passport != null && !passport.isEmpty()) {
 		            try {
 		            	
