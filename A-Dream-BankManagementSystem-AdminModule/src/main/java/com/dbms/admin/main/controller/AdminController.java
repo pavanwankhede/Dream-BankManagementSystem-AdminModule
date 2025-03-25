@@ -62,7 +62,7 @@ public class AdminController {
   // Uses mapper.readValue(empDataJson, Employee.class) to convert the JSON string into an Employee object.
 	            Employee empData = mapper.readValue(empDataJson, Employee.class);
 	            
-	         // ✅ Validate employee data before saving
+	         // Validate employee data before saving
 	            userService.validateUser(empData);
 	            // Save employee data
 	            Employee savedEmployee = serviceInterface.saveEmployeeData(empData, passport);
