@@ -1,8 +1,11 @@
 package com.dbms.admin.main.serviceImpl;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,9 +14,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.dbms.admin.main.exceptions.EmployeeNotFoundException;
+import com.dbms.admin.main.exceptions.ValidationException;
 import com.dbms.admin.main.model.Employee;
 import com.dbms.admin.main.repository.AdminRepository;
 import com.dbms.admin.main.serviceinterface.ServiceInterface;
+
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Validator;
 
 @Service
 public class AdminServiceImpl implements ServiceInterface{
@@ -24,22 +31,38 @@ public class AdminServiceImpl implements ServiceInterface{
 	@Autowired 
 	private AdminRepository adminRepository;
 
-
+	@Autowired
+	private Validator validator;
+ 
 		@Override
 	    public Employee saveEmployeeData(Employee empData, MultipartFile passport) {
-	        try {
-	        	//Checks if the passport file is not null and not empty.
-	            if (passport != null && !passport.isEmpty()) {
-	            	
-	            	// If a passport photo is provided, it reads the file as a byte array
-	                empData.setPassportPhoto(passport.getBytes());
-	            }
-	            return adminRepository.save(empData);
-	        
-	        } catch (IOException e) {
-	            log.error("Error while processing passport photo", e);
-	            throw new RuntimeException("Failed to process passport photo", e);
-	        }
+			 try {
+		            // Validate Employee Data
+		            validateUser(empData);
+		            
+		            // Checks if the passport file is not null and not empty.
+		            if (passport != null && !passport.isEmpty()) {
+		                // If a passport photo is provided, read the file as a byte array
+		                empData.setPassportPhoto(passport.getBytes());
+		            }
+		            
+		            return adminRepository.save(empData);
+		        } catch (IOException e) {
+		            log.error("Error while processing passport photo", e);
+		            throw new RuntimeException("Failed to process passport photo", e);
+		        }
+		    }
+		    
+		    private void validateUser(Employee employee) {
+		        Set<ConstraintViolation<Employee>> violations = validator.validate(employee);
+		        
+		        if (!violations.isEmpty()) {
+		            Map<String, String> errors = new HashMap<>();
+		            for (ConstraintViolation<Employee> violation : violations) {
+		                errors.put(violation.getPropertyPath().toString(), violation.getMessage());
+		            }
+		            throw new ValidationException(errors); // Throw custom validation exception
+		        }
 	    }
 
 
