@@ -27,14 +27,20 @@ import org.springframework.web.multipart.MultipartFile;
 import com.dbms.admin.main.dto.ErrorResponseDTO;
 import com.dbms.admin.main.model.Employee;
 import com.dbms.admin.main.serviceinterface.ServiceInterface;
+import com.dbms.admin.main.serviceinterface.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 
 
 @RestController
 @RequestMapping("/admin_module")
+@RequiredArgsConstructor // Automatically injects dependencies
 public class AdminController {
+	
+	@Autowired
+	private UserService userService;
 	
 	@Autowired
 	private ObjectMapper mapper;
@@ -48,12 +54,17 @@ public class AdminController {
 	    public ResponseEntity<?> addEmployeeData(
 	            @Valid @RequestPart("empData") String empDataJson, 
 	            @RequestPart("passport") MultipartFile passport) {
-	        
+	                
+		 
 	        try {
 	            log.info("Received request to save employee data.");
                 
   // Uses mapper.readValue(empDataJson, Employee.class) to convert the JSON string into an Employee object.
 	            Employee empData = mapper.readValue(empDataJson, Employee.class);
+	            
+	         // ✅ Validate employee data before saving
+	            userService.validateUser(empData);
+	            // Save employee data
 	            Employee savedEmployee = serviceInterface.saveEmployeeData(empData, passport);
 	            
 	            return new ResponseEntity<>(savedEmployee, HttpStatus.CREATED);
@@ -63,6 +74,9 @@ public class AdminController {
 	            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid employee data format.");
 	        } 
 	    }
+	 
+	 
+	 
 	 @GetMapping("/getAllEmployeeData")
 	 public ResponseEntity<List<Employee>> getAllEmployee(){
 		 log.info("Received request to fetch all employees.");
