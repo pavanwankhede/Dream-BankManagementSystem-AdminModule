@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
+import org.apache.commons.lang.RandomStringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,7 @@ import com.dbms.admin.main.exceptions.EmployeeNotFoundException;
 import com.dbms.admin.main.exceptions.ValidationException;
 import com.dbms.admin.main.model.Employee;
 import com.dbms.admin.main.repository.AdminRepository;
+import com.dbms.admin.main.serviceinterface.EmailDetails;
 import com.dbms.admin.main.serviceinterface.ServiceInterface;
 
 import jakarta.validation.ConstraintViolation;
@@ -33,26 +35,49 @@ public class AdminServiceImpl implements ServiceInterface{
 
 	@Autowired
 	private Validator validator;
+	
+	@Autowired
+    private EmailDetails emailDetails;
+	
  
 		@Override
 	    public Employee saveEmployeeData(Employee empData, MultipartFile passport) {
-			 try {
+			  try {
 		            // Validate Employee Data
 		            validateUser(empData);
-		            
-		            // Checks if the passport file is not null and not empty.
+
+		            // Generate and set a username
+		            String generatedUsername = generateUsername(empData.getFirstName());
+		            empData.setUserName(generatedUsername);
+
+		            // Generate and set a strong password
+		            String generatedPassword = generatePassword(empData.getFirstName());
+		            empData.setPassword(generatedPassword);
+
+		            // Check if a passport photo is provided
 		            if (passport != null && !passport.isEmpty()) {
-		                // If a passport photo is provided, read the file as a byte array
 		                empData.setPassportPhoto(passport.getBytes());
 		            }
-		            
-		            return adminRepository.save(empData);
+
+		            // Save employee data
+		            Employee savedEmployee = adminRepository.save(empData);
+
+		            // Send email with generated Account Activation
+		            emailDetails.sendEmail(
+		                empData.getEmailId(), 
+		                generatedUsername, 
+		                generatedPassword
+		            );
+
+		            log.info("Employee data saved and email sent to: " + empData.getEmailId());
+
+		            return savedEmployee;
 		        } catch (IOException e) {
 		            log.error("Error while processing passport photo", e);
 		            throw new RuntimeException("Failed to process passport photo", e);
 		        }
 		    }
-		    
+
 		    private void validateUser(Employee employee) {
 		        Set<ConstraintViolation<Employee>> violations = validator.validate(employee);
 		        
@@ -63,7 +88,22 @@ public class AdminServiceImpl implements ServiceInterface{
 		            }
 		            throw new ValidationException(errors); // Throw custom validation exception
 		        }
-	    }
+		    }
+
+		    private String generateUsername(String firstName) {
+		        String randomNumber = RandomStringUtils.randomNumeric(3);
+		        return firstName.toLowerCase() + randomNumber;
+		    }
+
+		    private String generatePassword(String firstName) {
+		        String numbers = RandomStringUtils.random(3, false,true);    // numbers
+		        String specialChar = RandomStringUtils.random(1, "@#$&"); //  special character
+  return firstName.substring(0, Math.min(4, firstName.length())).toUpperCase() + numbers + specialChar;
+		    }
+		             
+		        
+		  
+	    
 
 
 		@Override
