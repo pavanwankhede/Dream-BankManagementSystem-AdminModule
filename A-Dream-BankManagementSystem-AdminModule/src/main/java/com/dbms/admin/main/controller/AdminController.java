@@ -147,11 +147,11 @@ public class AdminController {
 			
  }
 	 @PutMapping("/updateUsernamePassword/{employeeId}")
-	 public ResponseEntity<String> updateEmployeeCredentials(
+	 public ResponseEntity<String> updateEmployeeUsernamePassword(
 	         @PathVariable int employeeId, 
 	         @RequestBody UsernamePasswordUpdate request) {
 
-	     log.info("Received request to update credentials for Employee ID: {}", employeeId);
+	     log.info("Received request to update Username Password for Employee ID: {}", employeeId);
 
 	     String response = serviceInterface.updateEmployeeUsernamePassword(employeeId, request);
 
