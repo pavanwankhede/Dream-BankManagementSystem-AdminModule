@@ -22,7 +22,7 @@ public Employee updateEmployeeData(Employee empData, MultipartFile passport, int
 
 public boolean deleteEmployeeByID(int id);
 
-public String updateEmployeeCredentials(int id, UsernamePasswordUpdate request);
+public String updateEmployeeUsernamePassword(int id, UsernamePasswordUpdate request);
 
 
 

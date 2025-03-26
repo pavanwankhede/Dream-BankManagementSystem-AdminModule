@@ -153,7 +153,7 @@ public class AdminController {
 
 	     log.info("Received request to update credentials for Employee ID: {}", employeeId);
 
-	     String response = serviceInterface.updateEmployeeCredentials(employeeId, request);
+	     String response = serviceInterface.updateEmployeeUsernamePassword(employeeId, request);
 
 	     if ("Success".equals(response)) {
 	         return ResponseEntity.ok("Username and password successfully changed.");

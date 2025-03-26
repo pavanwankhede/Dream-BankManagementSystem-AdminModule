@@ -164,7 +164,7 @@ public class AdminServiceImpl implements ServiceInterface{
 		 
 
 		 @Override
-		    public String updateEmployeeCredentials(int id, UsernamePasswordUpdate request) {
+		    public String updateEmployeeUsernamePassword(int id, UsernamePasswordUpdate request) {
 		        Employee employee = adminRepository.findById(id)
 		                .orElseThrow(() -> new RuntimeException("Employee not found with ID: " + id));
 
