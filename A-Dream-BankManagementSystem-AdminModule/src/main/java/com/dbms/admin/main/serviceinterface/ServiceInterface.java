@@ -4,9 +4,9 @@ import java.util.List;
 
 import org.springframework.web.multipart.MultipartFile;
 
+import com.dbms.admin.main.dto.UsernamePasswordUpdate;
 import com.dbms.admin.main.model.Employee;
 
-import jakarta.validation.Valid;
 
 public interface ServiceInterface {
 
@@ -21,6 +21,12 @@ public interface ServiceInterface {
 public Employee updateEmployeeData(Employee empData, MultipartFile passport, int id);
 
 public boolean deleteEmployeeByID(int id);
+
+public String updateEmployeeCredentials(int id, UsernamePasswordUpdate request);
+
+
+
+
 
 
  

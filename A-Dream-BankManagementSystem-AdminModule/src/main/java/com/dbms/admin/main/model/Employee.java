@@ -44,8 +44,14 @@ public class Employee {
     @Pattern(regexp = "^[A-Za-z ]+$", message = "Last name must contain only letters and spaces")
     private String lastName;
 
+    @Size(min = 3, max = 20, message = "Username must be between 3 and 20 characters")
+    @Pattern(regexp = "^[A-Z][a-zA-Z0-9]*$", message = "Username must start with a capital letter and contain only letters and numbers")
     private String userName;
-
+    
+    @Pattern(
+    	    regexp = "^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]+$",
+    	    message = "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character"
+    	)
     private String password;
 
     @NotBlank(message = "Gender is required")

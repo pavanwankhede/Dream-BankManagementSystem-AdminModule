@@ -11,9 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,10 +19,11 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.ResponseBody;
+
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-import com.dbms.admin.main.dto.ErrorResponseDTO;
+
+import com.dbms.admin.main.dto.UsernamePasswordUpdate;
 import com.dbms.admin.main.model.Employee;
 import com.dbms.admin.main.serviceinterface.ServiceInterface;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -147,9 +146,22 @@ public class AdminController {
 			  }
 			
  }
-	  
-	 
-	 
-}
+	 @PutMapping("/updateUsernamePassword/{employeeId}")
+	 public ResponseEntity<String> updateEmployeeCredentials(
+	         @PathVariable int employeeId, 
+	         @RequestBody UsernamePasswordUpdate request) {
 
+	     log.info("Received request to update credentials for Employee ID: {}", employeeId);
+
+	     String response = serviceInterface.updateEmployeeCredentials(employeeId, request);
+
+	     if ("Success".equals(response)) {
+	         return ResponseEntity.ok("Username and password successfully changed.");
+	     } else {
+	         return ResponseEntity.badRequest().body(response); // Returns specific error message
+	     }
+
+}
+}
+	 
 

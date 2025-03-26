@@ -14,7 +14,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.dbms.admin.main.dto.UsernamePasswordUpdate;
+import com.dbms.admin.main.employeeCredentials.UsernamePasswordGenerator;
 import com.dbms.admin.main.exceptions.EmployeeNotFoundException;
+
 import com.dbms.admin.main.exceptions.ValidationException;
 import com.dbms.admin.main.model.Employee;
 import com.dbms.admin.main.repository.AdminRepository;
@@ -39,72 +42,44 @@ public class AdminServiceImpl implements ServiceInterface{
 	@Autowired
     private EmailDetails emailDetails;
 	
- 
-		@Override
+	 @Override
 	    public Employee saveEmployeeData(Employee empData, MultipartFile passport) {
-			  try {
-		            // Validate Employee Data
-		            validateUser(empData);
+	        try {
+	            validateUser(empData);
 
-		            // Generate and set a username
-		            String generatedUsername = generateUsername(empData.getFirstName());
-		            empData.setUserName(generatedUsername);
+	            // Generate UserName Password
+	            empData.setUserName(UsernamePasswordGenerator.generateUsername(empData.getFirstName()));
+	            empData.setPassword(UsernamePasswordGenerator.generatePassword(empData.getFirstName()));
 
-		            // Generate and set a strong password
-		            String generatedPassword = generatePassword(empData.getFirstName());
-		            empData.setPassword(generatedPassword);
+	            // Save passport photo if provided
+	            if (passport != null && !passport.isEmpty()) {
+	                empData.setPassportPhoto(passport.getBytes());
+	            }
 
-		            // Check if a passport photo is provided
-		            if (passport != null && !passport.isEmpty()) {
-		                empData.setPassportPhoto(passport.getBytes());
-		            }
+	            // Save employee and send email
+	            Employee savedEmployee = adminRepository.save(empData);
+	            emailDetails.sendEmail(empData.getEmailId(), empData.getUserName(), empData.getPassword());
 
-		            // Save employee data
-		            Employee savedEmployee = adminRepository.save(empData);
+	            return savedEmployee;
+	        } catch (IOException e) {
+	            throw new RuntimeException("Failed to process passport photo", e);
+	        }
+	    }
 
-		            // Send email with generated Account Activation
-		            emailDetails.sendEmail(
-		                empData.getEmailId(), 
-		                generatedUsername, 
-		                generatedPassword
-		            );
+	 private void validateUser(Employee employee) {
+	        Set<ConstraintViolation<Employee>> violations = validator.validate(employee);
+	        
+	        if (!violations.isEmpty()) {
+	            Map<String, String> errors = new HashMap<>();
+	            for (ConstraintViolation<Employee> violation : violations) {
+	                errors.put(violation.getPropertyPath().toString(), violation.getMessage());
+	            }
+	            throw new ValidationException(errors); // Throw custom validation exception
+	        }
 
-		            log.info("Employee data saved and email sent to: " + empData.getEmailId());
-
-		            return savedEmployee;
-		        } catch (IOException e) {
-		            log.error("Error while processing passport photo", e);
-		            throw new RuntimeException("Failed to process passport photo", e);
-		        }
-		    }
-
-		    private void validateUser(Employee employee) {
-		        Set<ConstraintViolation<Employee>> violations = validator.validate(employee);
-		        
-		        if (!violations.isEmpty()) {
-		            Map<String, String> errors = new HashMap<>();
-		            for (ConstraintViolation<Employee> violation : violations) {
-		                errors.put(violation.getPropertyPath().toString(), violation.getMessage());
-		            }
-		            throw new ValidationException(errors); // Throw custom validation exception
-		        }
-		    }
-
-		    private String generateUsername(String firstName) {
-		        String randomNumber = RandomStringUtils.randomNumeric(3);
-		        return firstName.toLowerCase() + randomNumber;
-		    }
-
-		    private String generatePassword(String firstName) {
-		        String numbers = RandomStringUtils.random(3, false,true);    // numbers
-		        String specialChar = RandomStringUtils.random(1, "@#$&"); //  special character
-  return firstName.substring(0, Math.min(4, firstName.length())).toUpperCase() + numbers + specialChar;
-		    }
+	    }
+	
 		             
-		        
-		  
-	    
-
 
 		@Override
 		public List<Employee> getAllEmployees() {
@@ -186,7 +161,30 @@ public class AdminServiceImpl implements ServiceInterface{
 			 return adminRepository.findById(id)
 				        .orElseThrow(() -> new EmployeeNotFoundException("Employee with ID " + id + " not found."));
 				}
+		 
 
+		 @Override
+		    public String updateEmployeeCredentials(int id, UsernamePasswordUpdate request) {
+		        Employee employee = adminRepository.findById(id)
+		                .orElseThrow(() -> new RuntimeException("Employee not found with ID: " + id));
+
+		        // Verify old username
+		        if (!request.getOldUsername().equals(employee.getUserName())) {
+		            return "Old username does not match.";
+		        }
+
+		        // Verify old password
+		        if (!request.getOldPassword().equals(employee.getPassword())) {
+		            return "Old password does not match.";
+		        }
+
+		        // Update username and password
+		        employee.setUserName(request.getNewUsername());
+		        employee.setPassword(request.getNewPassword()); // Storing plain text (not recommended)
+
+		        adminRepository.save(employee);
+		        return "Success";
+		    }
 	
 }
 
