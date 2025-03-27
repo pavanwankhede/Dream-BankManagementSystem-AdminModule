@@ -107,26 +107,28 @@ public class AdminController {
 		 return new ResponseEntity<Employee>(employee,HttpStatus.OK);
 	 }
 	 
-	 
 	 @PutMapping("/updateEmployeeData/{employeeId}")
-	    public ResponseEntity<?> updateEmployeeData(
-	            @Valid @RequestPart("empData") String empDataJson, 
-	            @RequestPart("passport") MultipartFile passport,@PathVariable("employeeId")int id) {
-	        
-	        try {
-	        	log.info("Received request to update Employee with ID: {}", id);
-             
-// Uses mapper.readValue(empDataJson, Employee.class) to convert the JSON string into an Employee object.
-	            Employee empData = mapper.readValue(empDataJson, Employee.class);
-	            Employee savedEmployee = serviceInterface.updateEmployeeData(empData, passport,id);
-	            log.info("Successfully updated Employee with ID: {}", id);
-	            return new ResponseEntity<>(savedEmployee, HttpStatus.OK);
-	        
-	        } catch (IOException e) {
-	            log.error("Error processing employee data JSON", e);
-	            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid employee data format.");
-	        } 
-	        
+	 public ResponseEntity<?> updateEmployeeData(
+	         @Valid @RequestPart("empData") String empDataJson, 
+	         @RequestPart("passport") MultipartFile passport,
+	         @PathVariable("employeeId") int id) {
+
+	     try {
+	         log.info("Received request to update Employee with ID: {}", id);
+
+	         // Convert the empDataJson to Employee object
+	         Employee empData = mapper.readValue(empDataJson, Employee.class);
+
+	         // Call service to update employee data
+	         Employee savedEmployee = serviceInterface.updateEmployeeData(empData, passport, id);
+
+	         log.info("Successfully updated Employee with ID: {}", id);
+	         return new ResponseEntity<>(savedEmployee, HttpStatus.OK);
+
+	     } catch (IOException e) {
+	         log.error("Error processing employee data JSON", e);
+	         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid employee data format.");
+	     } 
 	    }
 	 
 	 @DeleteMapping("/deleteById/{employeeId}")

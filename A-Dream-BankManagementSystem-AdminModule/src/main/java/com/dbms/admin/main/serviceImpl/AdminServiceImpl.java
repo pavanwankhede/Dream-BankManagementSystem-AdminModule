@@ -106,41 +106,36 @@ public class AdminServiceImpl implements ServiceInterface{
 
 		@Override
 		public Employee updateEmployeeData(Employee empData, MultipartFile passport, int id) {
-			log.info("Received request to update Employee with ID: {}", id);
+		    log.info("Received request to update Employee with ID: {}", id);
 		    Optional<Employee> optionalEmployee = adminRepository.findById(id);
-		    
+
 		    if (optionalEmployee.isPresent()) {
 		        Employee employee = optionalEmployee.get();
-		        
+		        log.info("Existing employee found: {}", employee.getEmployeeId());
+
+
 		        // Update passport if provided
-		        log.info("Existing employee found: {}", employee);
-		        
 		        if (passport != null && !passport.isEmpty()) {
 		            try {
-		            	
-		            	// Assuming the passport is stored as a byte array
-		            	employee.setPassportPhoto(passport.getBytes());
-		            	log.info("Updating passport for Employee ID: {}", id);
-		            	
+		                employee.setPassportPhoto(passport.getBytes());  // Assuming passport photo is saved as a byte array
+		                log.info("Updating passport for Employee ID: {}", id);
 		            } catch (IOException e) {
 		                log.error("Error processing passport file", e);
 		                throw new RuntimeException("Failed to process passport file.");
 		            }
 		        }
-		        
+
+		        // Save the updated employee data
+		        Employee updatedEmployee = adminRepository.save(employee);
 		        log.info("Successfully updated Employee with ID: {}", id);
-		        
-		        // Save the updated employee
-		        return adminRepository.save(employee);
-		       
+		        return updatedEmployee;
 		    } else {
-		    	
-		    	log.error("Employee with ID {} not found", id);
-		    	
-		    	// Handle the case where employee is not found
-		        throw new RuntimeException("Employee not found with id: " + id);  
+		        log.warn("Employee with ID {} not found", id);
+		        throw new RuntimeException("Employee not found.");
 		    }
 		}
+
+		
 
 
 		@Override
