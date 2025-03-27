@@ -195,7 +195,7 @@ public class AdminServiceImpl implements ServiceInterface{
 
 		        // Update username and password
 		        employee.setUserName(request.getNewUsername());
-		        employee.setPassword(request.getNewPassword()); // Storing plain text (not recommended)
+		        employee.setPassword(request.getNewPassword()); 
 
 		        adminRepository.save(employee);
 		        return "Success";
