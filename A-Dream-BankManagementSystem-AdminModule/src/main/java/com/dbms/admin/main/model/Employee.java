@@ -34,7 +34,7 @@ public class Employee {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int employeeId; // Unique Employee ID
 
-    @NotBlank(message = "Full name cannot be blank")
+    @NotBlank(message = "First name cannot be blank")
     @Size(min = 3, max = 20, message = "Full name must be between 3 and 20 characters")
     @Pattern(regexp = "^[A-Za-z ]+$", message = "Full name must contain only letters and spaces")
     private String firstName;
