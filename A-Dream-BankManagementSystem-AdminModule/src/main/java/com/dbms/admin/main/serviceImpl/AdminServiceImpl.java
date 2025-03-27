@@ -24,6 +24,7 @@ import com.dbms.admin.main.repository.AdminRepository;
 import com.dbms.admin.main.serviceinterface.EmailDetails;
 import com.dbms.admin.main.serviceinterface.ServiceInterface;
 
+import jakarta.transaction.Transactional;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
 
@@ -103,7 +104,7 @@ public class AdminServiceImpl implements ServiceInterface{
 		}
         
 
-
+		
 		@Override
 		public Employee updateEmployeeData(Employee empData, MultipartFile passport, int id) {
 			log.info("Received request to update Employee with ID: {}", id);
@@ -112,6 +113,20 @@ public class AdminServiceImpl implements ServiceInterface{
 		    if (optionalEmployee.isPresent()) {
 		        Employee employee = optionalEmployee.get();
 		        
+		        
+		        employee.setFirstName(empData.getFirstName());
+		        employee.setLastName(empData.getLastName());
+		        employee.setGender(empData.getGender());
+		        
+		       employee.setDateOfBirth(empData.getDateOfBirth());
+		       employee.setEmailId(empData.getEmailId());
+		       employee.setSalary(empData.getSalary());
+		       employee.setContactNumber(empData.getContactNumber());
+		       employee.setAddress(empData.getAddress());
+		       employee.setCity(empData.getCity());
+		       employee.setState(empData.getState());
+		       employee.setCountry(empData.getCountry());
+		       employee.setDesignation(empData.getDesignation());
 		        // Update passport if provided
 		        log.info("Existing employee found: {}", employee);
 		        
