@@ -1,10 +1,9 @@
 package com.dbms.admin.main.model;
 
-import com.dbms.admin.main.enums.Department;
+
 import com.dbms.admin.main.enums.Designation;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -35,7 +34,7 @@ public class Employee {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int employeeId; // Unique Employee ID
 
-    @NotBlank(message = "Full name cannot be blank")
+    @NotBlank(message = "First name cannot be blank")
     @Size(min = 3, max = 20, message = "Full name must be between 3 and 20 characters")
     @Pattern(regexp = "^[A-Za-z ]+$", message = "Full name must contain only letters and spaces")
     private String firstName;
@@ -45,17 +44,15 @@ public class Employee {
     @Pattern(regexp = "^[A-Za-z ]+$", message = "Last name must contain only letters and spaces")
     private String lastName;
 
-    @NotBlank(message = "Username cannot be empty")
-    @Size(min = 4, max = 20, message = "Username must be between 4 and 20 characters")
+    @Size(min = 3, max = 20, message = "Username must be between 3 and 20 characters")
+    @Pattern(regexp = "^[A-Z][a-zA-Z0-9]*$", message = "Username must start with a capital letter and contain only letters and numbers")
     private String userName;
-
-    @NotBlank(message = "Password cannot be empty")
-    @Size(min = 8, max = 20, message = "Password must be between 8 and 20 characters")
+    
     @Pattern(
-    regexp = "^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[@$!%?&])[A-Za-z\\d@$!%?&]+$",
-   message = "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character"
+    	    regexp = "^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]+$",
+    	    message = "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character"
     	)
-    	private String password;
+    private String password;
 
     @NotBlank(message = "Gender is required")
     @Pattern(regexp = "^(Male|Female)$", message = "Gender must be Male, Female")
@@ -93,10 +90,6 @@ public class Employee {
 
     @NotBlank(message = "Country cannot be empty")
     private String country;
-
-    @NotNull(message = "Department is required")
-    @Enumerated(EnumType.STRING)
-    private Department department;
 
     @NotNull(message = "Designation is required")
     @Enumerated(EnumType.STRING)
